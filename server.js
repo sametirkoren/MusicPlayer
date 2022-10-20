@@ -5,7 +5,7 @@ const app = express()
 const dbConfig = require('./config/dbConfig')
 app.use(express.json())
 
-const songRoute = require('./routes/userRoute')
+const songRoute = require('./routes/songRoute')
 const userRoute = require('./routes/userRoute')
 
 app.use('/api/users', userRoute)
