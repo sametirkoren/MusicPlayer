@@ -25,12 +25,49 @@ router.post("/add-playlist", authMiddleware, async (req, res) => {
         });
         const updatedUser = await User.findByIdAndUpdate(req.body.userId, {
             playlists: existingPlaylists,
-        });
+        }, {new: true});
         return res.status(200).send({message: "Playlist created successfully", success: true, data: updatedUser})
     }catch (err) {
         return res.status(500).send({message: 'Error creating playlist', success: false, data: err});
     }
 })
 
+router.post("/update-playlist", authMiddleware, async (req, res) => {
+    try{
+        const user = await User.findById(req.body.userId);
+        let existingPlaylists = user.playlists;
+        existingPlaylists = existingPlaylists.map((playlist) => {
+            if(playlist.name === req.body.name){
+                playlist.songs = req.body.songs;
+            }
+            return playlist;
+        })
+        const updatedUser = await User.findByIdAndUpdate(req.body.userId, {
+            playlists: existingPlaylists,
+        }, {new: true});
+        return res.status(200).send({message: "Playlist updated successfully", success: true, data: updatedUser})
+    }catch (err) {
+        return res.status(500).send({message: 'Error updating playlist', success: false, data: err});
+    }
+})
+
+router.post("/delete-playlist", authMiddleware, async (req, res) => {
+    try{
+        const user = await User.findById(req.body.userId);
+        let existingPlaylists = user.playlists;
+        existingPlaylists = existingPlaylists.filter((playlist) => {
+            if(playlist.name === req.body.name){
+                return false;
+            }
+            return true;
+        })
+        const updatedUser = await User.findByIdAndUpdate(req.body.userId, {
+            playlists: existingPlaylists,
+        }, {new: true});
+        return res.status(200).send({message: "Playlist deleted successfully", success: true, data: updatedUser})
+    }catch (err) {
+        return res.status(500).send({message: 'Error updating playlist', success: false, data: err});
+    }
+})
 
 module.exports = router;
